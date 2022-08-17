@@ -1,7 +1,7 @@
-import { Global, Inject, Module, OnApplicationBootstrap, OnModuleInit } from '@nestjs/common';
+import { Global, Inject, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import { InjectModel, MongooseModule } from '@nestjs/mongoose';
-import { adminConfig, ConfigKey } from '@starter/backend/config';
+import { adminConfig } from '@starter/backend/config';
 import { Model } from 'mongoose';
 import models, { AuthDocument, UserDocument } from './models';
 import { ModelName } from './models/constants';
