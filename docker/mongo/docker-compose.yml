@@ -4,8 +4,8 @@ services:
   cfgsvr1:
     container_name: cfgsvr1
     image: mongo
-    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
     restart: always
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
     ports:
       - "40001:27017"
     volumes:
@@ -32,11 +32,10 @@ services:
       - cfgsvr3:/data/db
 
   cfgsetup:
-    image: mongo
     container_name: cfgsetup
-    volumes:
-      - ./cfgsvr:/usr/src/mongo
-    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    build:
+      context: ./cfgsvr
+    command: [ '/bin/bash', '-c', '/mongo/setup.sh' ]
     links:
       - cfgsvr1
       - cfgsvr2
@@ -78,10 +77,9 @@ services:
 
   shard1setup:
     container_name: shard1setup
-    image: mongo
-    volumes:
-      - ./shard1svr:/usr/src/mongo
-    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    build:
+      context: ./shard1svr
+    command: [ '/bin/bash', '-c', '/mongo/setup.sh' ]
     links:
       - shard1svr1
       - shard1svr2
@@ -123,10 +121,9 @@ services:
 
   shard2setup:
     container_name: shard2setup
-    image: mongo
-    volumes:
-      - ./shard2svr:/usr/src/mongo
-    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    build:
+      context: ./shard2svr
+    command: [ '/bin/bash', '-c', '/mongo/setup.sh' ]
     links:
       - shard2svr1
       - shard2svr2
@@ -154,10 +151,9 @@ services:
 
   mongos_setup:
     container_name: mongos_setup
-    image: mongo
-    volumes:
-      - ./mongos:/usr/src/mongo
-    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    build:
+      context: ./shard1svr
+    command: [ '/bin/bash', '-c', '/mongo/setup.sh' ]
     links:
       - shard1svr1
       - shard1svr2
