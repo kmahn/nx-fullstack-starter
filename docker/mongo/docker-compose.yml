@@ -1,0 +1,181 @@
+version: '3'
+
+services:
+  cfgsvr1:
+    container_name: cfgsvr1
+    image: mongo
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "40001:27017"
+    volumes:
+      - cfgsvr1:/data/db
+
+  cfgsvr2:
+    container_name: cfgsvr2
+    image: mongo
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "40002:27017"
+    volumes:
+      - cfgsvr2:/data/db
+
+  cfgsvr3:
+    container_name: cfgsvr3
+    image: mongo
+    command: mongod --configsvr --replSet cfgrs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "40003:27017"
+    volumes:
+      - cfgsvr3:/data/db
+
+  cfgsetup:
+    image: mongo
+    container_name: cfgsetup
+    volumes:
+      - ./cfgsvr:/usr/src/mongo
+    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    links:
+      - cfgsvr1
+      - cfgsvr2
+      - cfgsvr3
+    depends_on:
+      - cfgsvr1
+      - cfgsvr2
+      - cfgsvr3
+
+  shard1svr1:
+    container_name: shard1svr1
+    image: mongo
+    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "50001:27017"
+    volumes:
+      - shard1svr1:/data/db
+
+  shard1svr2:
+    container_name: shard1svr2
+    image: mongo
+    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "50002:27017"
+    volumes:
+      - shard1svr2:/data/db
+
+  shard1svr3:
+    container_name: shard1svr3
+    image: mongo
+    command: mongod --shardsvr --replSet shard1rs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "50003:27017"
+    volumes:
+      - shard1svr3:/data/db
+
+  shard1setup:
+    container_name: shard1setup
+    image: mongo
+    volumes:
+      - ./shard1svr:/usr/src/mongo
+    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    links:
+      - shard1svr1
+      - shard1svr2
+      - shard1svr3
+    depends_on:
+      - shard1svr1
+      - shard1svr2
+      - shard1svr3
+
+  shard2svr1:
+    container_name: shard2svr1
+    image: mongo
+    command: mongod --shardsvr --replSet shard2rs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "60001:27017"
+    volumes:
+      - shard2svr1:/data/db
+
+  shard2svr2:
+    container_name: shard2svr2
+    image: mongo
+    command: mongod --shardsvr --replSet shard2rs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "60002:27017"
+    volumes:
+      - shard2svr2:/data/db
+
+  shard2svr3:
+    container_name: shard2svr3
+    image: mongo
+    command: mongod --shardsvr --replSet shard2rs --port 27017 --dbpath /data/db
+    restart: always
+    ports:
+      - "60003:27017"
+    volumes:
+      - shard2svr3:/data/db
+
+  shard2setup:
+    container_name: shard2setup
+    image: mongo
+    volumes:
+      - ./shard2svr:/usr/src/mongo
+    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    links:
+      - shard2svr1
+      - shard2svr2
+      - shard2svr3
+    depends_on:
+      - shard2svr1
+      - shard2svr2
+      - shard2svr3
+
+  mongos:
+    container_name: mongos
+    image: mongo
+    command: mongos --configdb cfgrs/cfgsvr1:27017,cfgsvr2:27017,cfgsvr3:27017 --bind_ip 0.0.0.0 --port 27017
+    restart: always
+    ports:
+      - "27017:27017"
+    links:
+      - cfgsvr1
+      - cfgsvr2
+      - cfgsvr3
+    depends_on:
+      - cfgsetup
+      - shard1setup
+      - shard2setup
+
+  mongos_setup:
+    container_name: mongos_setup
+    image: mongo
+    volumes:
+      - ./mongos:/usr/src/mongo
+    command: [ '/bin/bash', '-c', '/usr/src/mongo/setup.sh' ]
+    links:
+      - shard1svr1
+      - shard1svr2
+      - shard1svr3
+      - shard2svr1
+      - shard2svr2
+      - shard2svr3
+      - mongos
+    depends_on:
+      - mongos
+
+volumes:
+  cfgsvr1: {}
+  cfgsvr2: {}
+  cfgsvr3: {}
+  shard1svr1: {}
+  shard1svr2: {}
+  shard1svr3: {}
+  shard2svr1: {}
+  shard2svr2: {}
+  shard2svr3: {}

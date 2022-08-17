@@ -1,0 +1,73 @@
+$animation-duration: 300ms;
+$animation-timing: ease-out;
+
+.cdk-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.32);
+
+  &.cdk-overlay-backdrop-showing {
+    animation-name: dialog-backdrop-anim;
+    animation-duration: $animation-duration;
+    animation-timing-function: $animation-timing;
+  }
+}
+
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.cdk-overlay-pane {
+  pointer-events: auto;
+  box-sizing: border-box;
+  z-index: 1000;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  animation-name: dialog-pane-anim;
+  animation-duration: $animation-duration;
+  animation-timing-function: $animation-timing;
+}
+
+.cdk-dialog-container {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cdk-overlay-container > * {
+  transition: none;
+}
+
+@keyframes dialog-pane-anim {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(100%);
+  }
+}
+
+@keyframes dialog-backdrop-anim {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

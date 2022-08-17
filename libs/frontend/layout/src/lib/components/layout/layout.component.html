@@ -1,0 +1,10 @@
+<header class="bg-stone-600 text-white block w-full sticky top-0">
+  <lf-header *ngIf="layoutService.visibilities.header"></lf-header>
+  <lf-navigation *ngIf="layoutService.visibilities.navigation && layoutService.config?.navigation"
+                 class="hidden md:block"></lf-navigation>
+</header>
+
+<ng-content select="[main]"></ng-content>
+
+<lf-footer *ngIf="layoutService.visibilities.footer"
+           class="bg-stone-300 block border-t border-t-stone-400"></lf-footer>

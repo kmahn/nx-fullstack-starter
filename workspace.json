@@ -1,5 +1,18 @@
 {
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
-  "projects": {}
+  "projects": {
+    "backend": "apps/backend",
+    "backend-bearer-token": "libs/backend/bearer-token",
+    "backend-config": "libs/backend/config",
+    "backend-exception": "libs/backend/exception",
+    "backend-mongo-database": "libs/backend/mongo-database",
+    "backend-utilities": "libs/backend/utilities",
+    "frontend-auth": "libs/frontend/auth",
+    "frontend-layout": "libs/frontend/layout",
+    "frontend-ui": "libs/frontend/ui",
+    "frontend-web": "apps/frontend/web",
+    "frontend-web-e2e": "apps/frontend/web-e2e",
+    "global-data": "libs/global/data"
+  }
 }

@@ -1,0 +1,52 @@
+<lf-responsive-container>
+  <header class="flex gap-4 items-center py-4">
+
+    <!--브랜드 로고 및 제목 영역-->
+    <a data-testid="brand"
+       *ngIf="config.homePageUrl"
+       role="banner"
+       [routerLink]="config.homePageUrl"
+       class="flex gap-4 items-center mr-auto">
+      <ng-container *ngTemplateOutlet="titleRef"></ng-container>
+    </a>
+    <div data-testid="brand"
+         *ngIf="!config.homePageUrl"
+         role="banner"
+         class="flex gap-4 items-center mr-auto">
+      <ng-container *ngTemplateOutlet="titleRef"></ng-container>
+    </div>
+    <ng-template #titleRef>
+      <img data-testid="logo"
+           *ngIf="config.logoUrl" class="h-8" [src]="config.logoUrl" alt="brand logo">
+      <h1 data-testid="title"
+          *ngIf="config.title" class="capitalize font-bold text-2xl">{{config.title}}</h1>
+    </ng-template>
+
+    <!--로그인 전 회원 가입 및 로그인 링크-->
+    <div class="gap-3 text-sm hidden md:flex">
+      <ng-container *ngIf="!layoutService.loggedIn; else loggedInRef">
+        <a data-testid="signup"
+           *ngIf="config.signupPageUrl" [routerLink]="config.signupPageUrl">회원가입</a>
+        <a data-testid="login"
+           *ngIf="config.loginPageUrl" [routerLink]="config.loginPageUrl">로그인</a>
+      </ng-container>
+    </div>
+
+    <!--로그인 후 마이페이지 링크 및 로그아웃 버튼-->
+    <ng-template #loggedInRef>
+      <a data-testid="my-page"
+         *ngIf="config.myPageUrl" [routerLink]="config.myPageUrl">마이페이지</a>
+      <button data-testid="logout"
+              type="button" (click)="layoutService.logout()">로그아웃</button>
+    </ng-template>
+    <button data-testid="popup-navigation"
+            *ngIf="config.popupNavigation"
+            type="button"
+            (click)="openPopupNavigation()"
+            class="block md:hidden outline-0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </header>
+</lf-responsive-container>

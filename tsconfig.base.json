@@ -14,7 +14,22 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@global/frontend/test": ["global/frontend/test"],
+      "@starter/backend-mongo-database": [
+        "libs/backend/mongo-database/src/index.ts"
+      ],
+      "@starter/backend/bearer-token": [
+        "libs/backend/bearer-token/src/index.ts"
+      ],
+      "@starter/backend/config": ["libs/backend/config/src/index.ts"],
+      "@starter/backend/exception": ["libs/backend/exception/src/index.ts"],
+      "@starter/backend/utilities": ["libs/backend/utilities/src/index.ts"],
+      "@starter/frontend/auth": ["libs/frontend/auth/src/index.ts"],
+      "@starter/frontend/layout": ["libs/frontend/layout/src/index.ts"],
+      "@starter/frontend/ui": ["libs/frontend/ui/src/index.ts"],
+      "@starter/global-data": ["libs/global/data/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

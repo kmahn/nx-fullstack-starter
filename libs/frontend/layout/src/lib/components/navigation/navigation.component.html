@@ -1,0 +1,20 @@
+<lf-responsive-container>
+  <ul class="flex gap-8 items-center font-bold py-2">
+    <li *ngFor="let item of items" class="uppercase">
+      <ng-container [ngSwitch]="item.type">
+        <button data-testid="action"
+                *ngSwitchCase="'action'"
+                class="uppercase"
+                (click)="castActionMenuItem(item).action($event)"
+                type="button">{{item.name}}</button>
+        <a data-testid="external"
+           *ngSwitchCase="'external'"
+           [href]="castLinkMenuItem(item).link"
+           target="_blank">{{item.name}}</a>
+        <a data-testid="internal"
+           *ngSwitchDefault
+           [routerLink]="castLinkMenuItem(item).link">{{item.name}}</a>
+      </ng-container>
+    </li>
+  </ul>
+</lf-responsive-container>

@@ -1,0 +1,25 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/frontend/auth/src",
+  "prefix": "lf",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/frontend/auth"],
+      "options": {
+        "jestConfig": "libs/frontend/auth/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/frontend/auth/**/*.ts",
+          "libs/frontend/auth/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

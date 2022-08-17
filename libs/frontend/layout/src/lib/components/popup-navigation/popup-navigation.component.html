@@ -1,0 +1,40 @@
+<lf-close-button class="absolute top-4 right-4" (click)="close()"></lf-close-button>
+
+<ul class="flex flex-col justify-center space-y-2 text-md py-2 overflow-y-auto h-full px-8">
+  <li *ngFor="let item of popupNavigationConfig?.menuItems">
+    <button data-testid="menu-item"
+            type="button"
+            (click)="select(item, $event)"
+            class="uppercase focus:outline-none flex py-2">{{item.name}}</button>
+  </li>
+  <ng-container *ngIf="!layoutService.loggedIn; else loggedInRef">
+    <li *ngIf="popupNavigationConfig?.showSignupLink" class="py-2">
+      <button data-testid="signup" type="button"
+              (click)="route(config.signupPageUrl, $event)">
+        회원가입
+      </button>
+    </li>
+    <li *ngIf="popupNavigationConfig?.showLoginLink" class="py-2">
+      <button data-testid="login"
+              type="button"
+              (click)="route( config.loginPageUrl, $event)">
+        로그인
+      </button>
+    </li>
+  </ng-container>
+  <ng-template #loggedInRef>
+    <li *ngIf="popupNavigationConfig?.showMyPageLink" class="py-2">
+      <button data-testid="my-page"
+              type="button"
+              (click)="route(config.myPageUrl, $event)">
+        마이페이지
+      </button>
+    </li>
+    <li>
+      <button data-testid="logout"
+              type="button"
+              (click)="logout($event)">로그아웃
+      </button>
+    </li>
+  </ng-template>
+</ul>
