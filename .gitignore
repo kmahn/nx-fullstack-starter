@@ -1,8 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # config files
-/libs/backend/config/src/lib/.config/
-!/libs/backend/config/src/lib/.config/env/.gitkeep
+/libs/backend/config/src/.config/
+!libs/backend/config/src/.config/env/.gitkeep
 
 
 # compiled output
