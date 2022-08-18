@@ -103,21 +103,16 @@ describe('LoginPageComponent', () => {
     describe('이메일', () => {
       it('바인딩', () => {
         const email = 'test@test.com';
-        const de = ngMocks.find('input[formControlName=email]');
-        de.nativeElement.value = email;
-        de.nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
-
+        const de = ngMocks.find('[formControlName=email]');
+        ngMocks.change(de, email);
         expect(component.formGroup.get('email')?.value).toEqual(email);
       });
 
       it('에러 메시지(유효한 이메일)', () => {
         const email = 'test@test.com';
-        const inputDe = ngMocks.find('input[formControlName=email]');
+        const inputDe = ngMocks.find('[formControlName=email]');
         const formDe = ngMocks.find('form');
-        inputDe.nativeElement.value = email;
-        inputDe.nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
+        ngMocks.change(inputDe, email);
 
         formDe.triggerEventHandler('submit', null);
         fixture.detectChanges();
@@ -128,11 +123,10 @@ describe('LoginPageComponent', () => {
 
       it('에러 메시지(이메일주소를 입력하지 않은 경우)', () => {
         const email = '';
-        const inputDe = ngMocks.find('input[formControlName=email]');
+        const inputDe = ngMocks.find('[formControlName=email]');
         const formDe = ngMocks.find('form');
-        inputDe.nativeElement.value = email;
-        inputDe.nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
+
+        ngMocks.change(inputDe, email);
 
         formDe.triggerEventHandler('submit', null);
         fixture.detectChanges();
@@ -145,12 +139,10 @@ describe('LoginPageComponent', () => {
 
       it('에러 메시지(잘못된 형식의 이메일 주소)', () => {
         const email = 'test';
-        const inputDe = ngMocks.find('input[formControlName=email]');
+        const inputDe = ngMocks.find('[formControlName=email]');
         const formDe = ngMocks.find('form');
-        inputDe.nativeElement.value = email;
-        inputDe.nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
 
+        ngMocks.change(inputDe, email);
         formDe.triggerEventHandler('submit', null);
         fixture.detectChanges();
 
@@ -164,22 +156,19 @@ describe('LoginPageComponent', () => {
     describe('비밀번호', () => {
       it('바인딩', () => {
         const password = 'asdf1234';
-        const de = ngMocks.find('input[formControlName=password]');
-        de.nativeElement.value = password;
-        de.nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
+        const de = ngMocks.find('[formControlName=password]');
+
+        ngMocks.change(de, password);
 
         expect(component.formGroup.get('password')?.value).toEqual(password);
       });
 
       it('에러 메시지(유효한 비밀번호)', () => {
         const password = 'asdf1234';
-        const inputDe = ngMocks.find('input[formControlName=password]');
+        const inputDe = ngMocks.find('[formControlName=password]');
         const formDe = ngMocks.find('form');
-        inputDe.nativeElement.value = password;
-        inputDe.nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
 
+        ngMocks.change(inputDe, password);
         formDe.triggerEventHandler('submit', null);
         fixture.detectChanges();
 
@@ -189,12 +178,10 @@ describe('LoginPageComponent', () => {
 
       it('에러 메시지(비밀번호를 입력하지 않은 경우)', () => {
         const password = '';
-        const inputDe = ngMocks.find('input[formControlName=password]');
+        const inputDe = ngMocks.find('[formControlName=password]');
         const formDe = ngMocks.find('form');
-        inputDe.nativeElement.value = password;
-        inputDe.nativeElement.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
 
+        ngMocks.change(inputDe, password);
         formDe.triggerEventHandler('submit', null);
         fixture.detectChanges();
 

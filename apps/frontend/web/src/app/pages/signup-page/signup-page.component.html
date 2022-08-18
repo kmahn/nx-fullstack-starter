@@ -1,1 +1,42 @@
-<p>signup-page works!</p>
+<form [formGroup]="formGroup" (ngSubmit)="submit()"
+      class="flex flex-col gap-4 mx-auto mt-52 w-full sm:max-w-xl px-4">
+  <h2 class="font-bold text-2xl">회원가입</h2>
+
+  <lf-control-wrapper-with-error-message>
+    <lf-input type="email"
+              placeholder="이메일 입력"
+              formControlName="email"></lf-input>
+    <span error *ngIf="hasError('required', 'email')">이메일을 입력해주세요.</span>
+    <span error *ngIf="hasError('email', 'email')">잘못된 이메일 형식입니다.</span>
+  </lf-control-wrapper-with-error-message>
+
+  <lf-control-wrapper-with-error-message>
+    <lf-input type="password"
+              placeholder="비밀번호 입력"
+              formControlName="password"></lf-input>
+    <span error *ngIf="hasError('required', 'password')">비밀번호를 입력해주세요.</span>
+  </lf-control-wrapper-with-error-message>
+
+  <lf-control-wrapper-with-error-message>
+    <lf-input type="password"
+              placeholder="비밀번호 확인"
+              formControlName="confirmPassword"></lf-input>
+    <span error *ngIf="hasError('confirmPassword')">비밀번호를 확인해주세요.</span>
+  </lf-control-wrapper-with-error-message>
+
+  <lf-control-wrapper-with-error-message>
+    <lf-input placeholder="이름 입력"
+              formControlName="name"></lf-input>
+    <span error *ngIf="hasError('required', 'name')">이름을 입력해주세요.</span>
+  </lf-control-wrapper-with-error-message>
+
+  <div class="flex text-sm items-center">
+    <span class="ml-auto">회원이신가요?
+      <a class="text-sky-600 ml-4 text-base" routerLink="/login">로그인</a>
+    </span>
+  </div>
+
+  <lf-button [disabled]="pending" type="submit">
+    {{pending ? '회원가입 중...' : '회원가입'}}
+  </lf-button>
+</form>

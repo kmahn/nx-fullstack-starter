@@ -9,15 +9,20 @@ export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const start = Date.now();
     const request = context.switchToHttp().getRequest();
-    const { method, url, body, user } = request;
+    const { method, url, body, user, headers } = request;
+    let ip = headers.hasOwnProperty('x-real-ip') && headers['x-real-ip'];
+    ip = ip || (headers.hasOwnProperty('x-forwarded-for') && headers['x-forwarded-for']);
+    ip = ip || request.connection?.remoteAddress;
+    const agent = headers.hasOwnProperty('user-agent') ? headers['user-agent'] : undefined;
+    const referer = headers.referer;
 
     return next
       .handle()
       .pipe(
         tap(response => {
           const time = Date.now() - start;
-          const loggingMessage = this._toJson({ user, body, response, time });
-          Logger.log(`${method} ${url} ::: ${time}ms\n\t${loggingMessage}`);
+          const loggingMessage = this._toJson({ user, body, response, time, ip, agent, referer });
+          Logger.log(`${method} ${url} ::: ${time}ms\n\t${loggingMessage}\n`);
         })
       );
   }

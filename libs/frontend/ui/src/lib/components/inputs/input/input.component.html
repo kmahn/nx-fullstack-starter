@@ -1,0 +1,7 @@
+<input class="py-2 px-4 border border-gray-200 focus:outline-stone-200 w-full"
+       #inputRef
+       [type]="type"
+       [value]="value"
+       [disabled]="disabled"
+       [placeholder]="placeholder"
+       (input)="change(inputRef.value)">

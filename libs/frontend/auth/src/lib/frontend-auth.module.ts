@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { APP_AUTH_CONFIG, AuthConfig } from './auth-config';
-import { AuthGuard, NotAuthGuard } from './guards';
-import { BearerTokenInterceptor } from './interceptors/bearer-token.interceptor';
-import { AuthService, AuthStorageService } from './services';
+import { Guards } from './guards';
+import { Interceptors } from './interceptors';
+import { Services } from './services';
 
 @NgModule({
   imports: [
@@ -26,11 +26,9 @@ export class FrontendAuthModule {
     return {
       ngModule: FrontendAuthModule,
       providers: [
-        AuthStorageService,
-        AuthService,
-        AuthGuard,
-        NotAuthGuard,
-        { provide: HTTP_INTERCEPTORS, useClass: BearerTokenInterceptor, multi: true },
+        ...Services,
+        ...Guards,
+        ...Interceptors,
         { provide: APP_AUTH_CONFIG, useValue: config }
       ],
     }

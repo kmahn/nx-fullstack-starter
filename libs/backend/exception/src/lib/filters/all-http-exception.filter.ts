@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, HttpStatus, Logger } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { ErrorCode, ErrorResponseDto, LoggingData } from '@starter/global-data';
-import { createHttpException } from '../exceptions';
+import { AccessTokenExpiredException, createHttpException, LoginRequiredException } from '../exceptions';
 
 @Catch()
 export class AllHttpExceptionFilter extends BaseExceptionFilter {
@@ -13,13 +13,9 @@ export class AllHttpExceptionFilter extends BaseExceptionFilter {
     const { message } = request.authInfo || {};
 
     if (message === 'jwt expired') {
-      exception = createHttpException(HttpStatus.UNAUTHORIZED, {
-        code: ErrorCode.ACCESS_TOKEN_EXPIRED,
-      });
+      exception = new AccessTokenExpiredException();
     } else if (message === 'No auth token') {
-      exception = createHttpException(HttpStatus.UNAUTHORIZED, {
-        code: ErrorCode.LOGIN_REQUIRED,
-      });
+      exception = new LoginRequiredException();
     } else {
       exception = createHttpException(
         exception.status || exception.statusCode,

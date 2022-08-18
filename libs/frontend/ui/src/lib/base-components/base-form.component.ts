@@ -51,10 +51,9 @@ export abstract class BaseFormComponent<RequestDtoType> implements OnInit, OnDes
         this._submittedSubject.next(false);
       }),
       this._pendingSubject.subscribe(pending => {
-        Object.keys(this.formGroup || {}).forEach(key => {
+        Object.keys(this.formGroup.controls || {}).forEach(key => {
           const control = this.formGroup.get(key);
           if (control instanceof FormControl) {
-            console.log(pending);
             pending ? control.disable() : control.enable();
           }
         });

@@ -3,8 +3,8 @@ import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import { InjectModel, MongooseModule } from '@nestjs/mongoose';
 import { adminConfig } from '@starter/backend/config';
 import { Model } from 'mongoose';
-import models, { AuthDocument, UserDocument } from './models';
-import { ModelName } from './models/constants';
+import { ModelName } from './enum';
+import { AuthDocument, models, UserDocument } from './models';
 
 @Global()
 @Module({

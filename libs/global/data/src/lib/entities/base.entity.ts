@@ -1,7 +1,7 @@
 import { UserEntity } from './user.entity';
 
 export interface BaseEntity {
-  _id: string;
+  _id: any;
 }
 
 export interface CreateEntity {

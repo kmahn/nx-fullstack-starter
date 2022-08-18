@@ -27,7 +27,8 @@ function setReturnValueOfDateSpy(start, end) {
 }
 
 function setReturnValueOfRequestSpy(req: any) {
-  (context.switchToHttp().getRequest as jest.Mock<any, any>).mockReturnValue(req);
+  req.headers = req.headers || {};
+  (context.switchToHttp().getRequest).mockReturnValue(req);
 }
 
 function setReturnValueOfNextHandleSpy(data: any) {
@@ -65,7 +66,7 @@ describe('LoggingInterceptor', () => {
       interceptor.intercept(context, next).subscribe();
 
       const loggingData = { response, time };
-      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}`;
+      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}\n`;
       expectLogToBeCalledWith(msg);
     });
 
@@ -83,7 +84,7 @@ describe('LoggingInterceptor', () => {
       interceptor.intercept(context, next).subscribe();
 
       const loggingData = { body, response, time }
-      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}`;
+      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}\n`;
       expectLogToBeCalledWith(msg);
     });
 
@@ -101,7 +102,7 @@ describe('LoggingInterceptor', () => {
       interceptor.intercept(context, next).subscribe();
 
       const loggingData = { user, response, time };
-      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}`;
+      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}\n`;
       expectLogToBeCalledWith(msg);
     });
 
@@ -120,8 +121,83 @@ describe('LoggingInterceptor', () => {
       interceptor.intercept(context, next).subscribe();
 
       const loggingData = { user, body, response, time };
-      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}`;
+      const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}\n`;
       expectLogToBeCalledWith(msg);
     });
+
+    it(
+      'method + url + body + user + headers.connection.remoteAddress + headers["user-agent"] + headers["referer"]',
+      () => {
+        const method = 'PUT';
+        const url = '/update';
+        const body = { value: 'mock body value' };
+        const user = { _id: 'user id', role: 'admin' };
+        const response = { value: 'mock response value' };
+        const [start, end] = [2, 5];
+        const time = end - start;
+        const remoteAddress = '::ffff:127.0.0.1';
+        const connection = { remoteAddress };
+        const agent = 'Mozilla';
+        const referer = 'https://test.com';
+        const headers = { referer, 'user-agent': agent };
+        setReturnValueOfDateSpy(start, end);
+        setReturnValueOfRequestSpy({ url, method, body, user, headers, connection });
+        setReturnValueOfNextHandleSpy(response);
+
+        interceptor.intercept(context, next).subscribe();
+
+        const loggingData = { user, body, response, time, ip: remoteAddress, agent, referer };
+        const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}\n`;
+        expectLogToBeCalledWith(msg);
+      });
+    it(
+      'method + url + body + user + headers["x-forwarded-for"] + headers["user-agent"] + headers["referer"]',
+      () => {
+        const method = 'PUT';
+        const url = '/update';
+        const body = { value: 'mock body value' };
+        const user = { _id: 'user id', role: 'admin' };
+        const response = { value: 'mock response value' };
+        const [start, end] = [2, 5];
+        const time = end - start;
+        const ip = '192.168.0.1';
+        const agent = 'Mozilla';
+        const referer = 'https://test.com';
+        const headers = { referer, 'user-agent': agent, 'x-forwarded-for': ip };
+        setReturnValueOfDateSpy(start, end);
+        setReturnValueOfRequestSpy({ url, method, body, user, headers });
+        setReturnValueOfNextHandleSpy(response);
+
+        interceptor.intercept(context, next).subscribe();
+
+        const loggingData = { user, body, response, time, ip, agent, referer };
+        const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}\n`;
+        expectLogToBeCalledWith(msg);
+      });
+
+    it(
+      'method + url + body + user + headers["x-real-ip"] + headers["user-agent"] + headers["referer"]',
+      () => {
+        const method = 'PUT';
+        const url = '/update';
+        const body = { value: 'mock body value' };
+        const user = { _id: 'user id', role: 'admin' };
+        const response = { value: 'mock response value' };
+        const [start, end] = [2, 5];
+        const time = end - start;
+        const ip = '192.168.0.1';
+        const agent = 'Mozilla';
+        const referer = 'https://test.com';
+        const headers = { referer, 'user-agent': agent, 'x-real-ip': ip };
+        setReturnValueOfDateSpy(start, end);
+        setReturnValueOfRequestSpy({ url, method, body, user, headers });
+        setReturnValueOfNextHandleSpy(response);
+
+        interceptor.intercept(context, next).subscribe();
+
+        const loggingData = { user, body, response, time, ip, agent, referer };
+        const msg = `${method} ${url} ::: ${time}ms\n\t${JSON.stringify(loggingData)}\n`;
+        expectLogToBeCalledWith(msg);
+      });
   });
 });

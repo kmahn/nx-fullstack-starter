@@ -1,38 +1,32 @@
 <form [formGroup]="formGroup" (ngSubmit)="submit()"
-      class="flex flex-col gap-4 mx-auto mt-52 w-full md:max-w-xl px-4">
+      class="flex flex-col gap-4 mx-auto mt-52 w-full sm:max-w-xl px-4">
   <h2 class="font-bold text-2xl">로그인</h2>
-  <div class="space-y-1 w-full">
-    <input class="py-2 px-4 border border-gray-200 focus:outline-none w-full"
-           placeholder="이메일 입력"
-           type="email" formControlName="email">
-    <div data-testid="email-error"
-         class="text-xs text-red-600 h-4">
-      <span *ngIf="hasError('required', 'email')">이메일을 입력해주세요.</span>
-      <span *ngIf="hasError('email', 'email')">잘못된 이메일 형식입니다.</span>
-    </div>
-  </div>
-  <div class="space-y-1 w-full">
-    <input class="py-2 px-4 border border-gray-200 focus:outline-none w-full"
-           placeholder="비밀번호 입력"
-           type="password"
-           formControlName="password">
-    <div data-testid="password-error"
-         class="text-xs text-red-600 h-4">
-      <span *ngIf="hasError('required', 'password')">비밀번호를 입력해주세요.</span>
-    </div>
-  </div>
+
+  <lf-control-wrapper-with-error-message>
+    <lf-input type="email"
+              placeholder="이메일 입력"
+              formControlName="email"></lf-input>
+    <span error *ngIf="hasError('required', 'email')">이메일을 입력해주세요.</span>
+    <span error *ngIf="hasError('email', 'email')">잘못된 이메일 형식입니다.</span>
+  </lf-control-wrapper-with-error-message>
+
+  <lf-control-wrapper-with-error-message>
+    <lf-input type="password"
+              placeholder="비밀번호 입력"
+              formControlName="password"></lf-input>
+    <span error *ngIf="hasError('required', 'password')">비밀번호를 입력해주세요.</span>
+  </lf-control-wrapper-with-error-message>
+
   <div class="flex text-sm items-center">
-    <label>
-      <input type="checkbox"
-             class="mr-2"
-             [checked]="autoLogin"
-             (change)="autoLogin = !autoLogin">
-      자동로그인
-    </label>
+    <lf-checkbox [(ngModel)]="autoLogin"
+                 [ngModelOptions]="{standalone: true}">자동로그인</lf-checkbox>
 
     <span class="ml-auto">아직 회원이 아니신가요?
       <a class="text-sky-600 ml-4 text-base" routerLink="/signup">회원가입</a>
     </span>
   </div>
-  <button class="bg-stone-600 text-white py-2" type="submit">로그인</button>
+
+  <lf-button [disabled]="pending" type="submit">
+    {{pending ? '로그인 중...' : '로그인'}}
+  </lf-button>
 </form>

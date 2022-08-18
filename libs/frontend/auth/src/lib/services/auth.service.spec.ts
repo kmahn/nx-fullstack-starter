@@ -183,7 +183,7 @@ describe('AuthService', () => {
     });
     const service = ngMocks.findInstance(AuthService);
 
-    service.join(dto).subscribe();
+    service.signup(dto).subscribe();
 
     const joinReq = httpMock.expectOne(config.signupApiUrl);
     expect(joinReq.request.method).toEqual('POST');

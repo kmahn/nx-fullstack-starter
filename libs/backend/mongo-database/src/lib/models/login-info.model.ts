@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { LoginInfoEntity } from '@starter/global-data';
 import mongoose, { Document } from 'mongoose';
-import { CollectionName } from './constants';
+import { CollectionName } from '../enum';
 
 @Schema({ collection: CollectionName.LOGIN_INFO })
 export class LoginInfoDocument extends Document implements Partial<LoginInfoEntity> {

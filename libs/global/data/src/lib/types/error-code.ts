@@ -9,6 +9,7 @@ export enum ErrorCode {
   HTTP_VERSION_NOT_SUPPORTED = 'http version not supported',
   I_AM_A_TEAPOT = 'i am a teapot',
   INTERNAL_SERVER_ERROR = 'internal server error',
+  INVALID_PASSWORD = 'invalid password',
   LOGIN_REQUIRED = 'login required',
   METHOD_NOT_ALLOWED = 'method not allowed',
   NOT_ACCEPTABLE = 'not acceptable',
@@ -22,4 +23,5 @@ export enum ErrorCode {
   UNPROCESSABLE_ENTITY = 'unprocessable entity',
   UNSUPPORTED_MEDIA_TYPE = 'unsupported media type',
   USER_NOT_FOUND = 'user not found',
+  WITHDRAWN_USER = 'withdrawn_user',
 }

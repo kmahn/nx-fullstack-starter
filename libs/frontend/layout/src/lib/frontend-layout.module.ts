@@ -4,14 +4,9 @@ import { ModuleWithProviders, NgModule, Optional, SkipSelf, } from '@angular/cor
 import { RouterModule } from '@angular/router';
 import { CloseButtonComponent } from '@starter/frontend/ui';
 import { APP_LAYOUT_CONFIG, AppLayoutConfig } from './app-layout-config';
-import { FooterComponent } from './components/footer/footer.component';
-import { HeaderComponent } from './components/header/header.component';
-import { LayoutComponent } from './components/layout/layout.component';
-import { NavigationComponent } from './components/navigation/navigation.component';
-import { PopupNavigationComponent } from './components/popup-navigation/popup-navigation.component';
-import { ResponsiveContainerComponent } from './components/responsive-container/responsive-container.component';
+import { Components, LayoutComponent, ResponsiveContainerComponent } from './components';
 import { DEFAULT_APP_LAYOUT_CONFIG } from './default-setup';
-import { LayoutService } from './services/layout.service';
+import { Services } from './services';
 
 @NgModule({
   imports: [
@@ -21,15 +16,12 @@ import { LayoutService } from './services/layout.service';
     CloseButtonComponent
   ],
   providers: [
-    LayoutService
+    ...Services,
   ],
   declarations: [
-    HeaderComponent,
     LayoutComponent,
-    FooterComponent,
-    NavigationComponent,
     ResponsiveContainerComponent,
-    PopupNavigationComponent,
+    ...Components,
   ],
   exports: [LayoutComponent, ResponsiveContainerComponent],
 })

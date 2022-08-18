@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { BackendConfigModule } from '@starter/backend/config';
-import { JwtStrategy } from './strategies/jwt-strategy';
-import { BearerTokenService } from './services/bearer-token.service';
+import { BearerTokenService } from './services';
+import { Strategies } from './strategies';
 
+@Global()
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -16,7 +17,10 @@ import { BearerTokenService } from './services/bearer-token.service';
       }),
     }),
   ],
-  providers: [JwtStrategy, BearerTokenService],
+  providers: [
+    BearerTokenService,
+    ...Strategies
+  ],
   exports: [BearerTokenService]
 })
 export class BackendBearerTokenModule {}

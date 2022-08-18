@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { UserEntity, USER_ROLES, UserRoleType } from '@starter/global-data';
 import mongoose, { Document } from 'mongoose';
-import { CollectionName } from './constants';
+import { CollectionName } from '../enum';
 
 @Schema({
   collection: CollectionName.USER,
@@ -11,7 +11,7 @@ export class UserDocument extends Document implements Partial<UserEntity> {
   @Prop({ type: String, enum: USER_ROLES, default: 'member' })
   role?: UserRoleType;
 
-  @Prop({ type: String, unique: true, required: true })
+  @Prop({ type: String, unique: true, required: true, lowercase: true })
   email: string;
 
   @Prop({ type: String, trim: true, index: true, required: true })

@@ -14,4 +14,5 @@ export interface AuthEntity extends BaseEntity {
   provider: ProviderType;
   password?: string;
   user: string;
+  validatePassword?: (password: string) => boolean;
 }

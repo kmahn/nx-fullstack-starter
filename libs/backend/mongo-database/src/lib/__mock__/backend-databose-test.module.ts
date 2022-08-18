@@ -2,8 +2,8 @@ import { Provider } from '@nestjs/common';
 import { getModelToken, MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { connect, Connection, Document, Model } from 'mongoose';
-import models from '../models';
-import { ModelName } from '../models/constants';
+import { ModelName } from '../enum';
+import { models } from '../models';
 
 let mongod: MongoMemoryServer | null = null;
 let connection: Connection | null = null;

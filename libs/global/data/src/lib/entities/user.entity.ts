@@ -5,7 +5,7 @@ export interface UserEntity extends UserProfile, BaseEntity {
   email: string;
   name: string;
   auth: string | null;
-  accessDate: Date;
+  accessDate: Date | null;
   joinedAt: Date;
   updatedAt: Date;
 }

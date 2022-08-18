@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import {
   AuthTokens,
-  JoinRequestDto,
+  SignupRequestDto,
   LoginResponseDto,
   UserEntity,
 } from '@starter/global-data';
@@ -82,7 +82,7 @@ export class AuthService {
       );
   }
 
-  join(dto: JoinRequestDto): Observable<undefined> {
+  signup(dto: SignupRequestDto): Observable<undefined> {
     return this.http.post<undefined>(this.JOIN_API_URL, dto);
   }
 

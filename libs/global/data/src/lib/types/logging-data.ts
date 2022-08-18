@@ -5,4 +5,7 @@ export interface LoggingData {
   body?: any;
   response?: any;
   time?: number;
+  ip?: string;
+  agent?: string;
+  referer?: string;
 }

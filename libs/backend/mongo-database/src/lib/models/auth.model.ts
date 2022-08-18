@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AuthEntity, PROVIDERS, ProviderType } from '@starter/global-data';
 import { compareSync, hashSync } from 'bcrypt';
 import mongoose, { Document } from 'mongoose';
-import { CollectionName } from './constants';
+import { CollectionName } from '../enum';
 
 @Schema({ collection: CollectionName.AUTH })
 export class AuthDocument extends Document implements Partial<AuthEntity> {

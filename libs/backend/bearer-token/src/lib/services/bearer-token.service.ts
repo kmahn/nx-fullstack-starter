@@ -7,7 +7,12 @@ export class BearerTokenService {
   constructor(private jwtService: JwtService) {
   }
 
-  verify(token: string): UserProfile {
+  verify(bearerToken: string): UserProfile {
+    const token = bearerToken.replace(/^Bearer /, '');
     return this.jwtService.verify(token);
+  }
+
+  sign(payload: UserProfile): string {
+    return this.jwtService.sign(payload);
   }
 }

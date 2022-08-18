@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "backend": "apps/backend",
+    "backend-api": "apps/backend/api",
     "backend-bearer-token": "libs/backend/bearer-token",
     "backend-config": "libs/backend/config",
     "backend-exception": "libs/backend/exception",

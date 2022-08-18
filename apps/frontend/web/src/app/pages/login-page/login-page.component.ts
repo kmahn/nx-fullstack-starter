@@ -5,7 +5,6 @@ import { AuthService, AuthStorageService } from '@starter/frontend/auth';
 import { LayoutService } from '@starter/frontend/layout';
 import { BaseFormComponent, FormGroupType } from '@starter/frontend/ui';
 import { LoginRequestDto } from '@starter/global-data';
-import { timer } from 'rxjs';
 
 @Component({
   selector: 'lf-login-page',
@@ -36,8 +35,7 @@ export class LoginPageComponent extends BaseFormComponent<LoginRequestDto> {
 
   protected processRequest(dto: LoginRequestDto): any {
     const { email, password } = dto;
-    // return this.authService.login(email, password, this.autoLogin);
-    return timer(5000);
+    return this.authService.login(email, password, this.autoLogin);
   }
 
   protected async processResponse(): Promise<void> {
