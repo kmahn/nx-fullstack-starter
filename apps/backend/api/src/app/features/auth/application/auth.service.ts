@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { BearerTokenService } from '@starter/backend/bearer-token';
 import {
@@ -22,20 +22,20 @@ import { FindUserQuery } from './queries';
 @Injectable()
 export class AuthService {
   constructor(
-    private commandBus: CommandBus,
-    private queryBus: QueryBus,
-    private _authRepository: AuthRepository,
-    private _userRepository: UserRepository,
-    private bearerTokenService: BearerTokenService,
+    @Inject(AuthRepository) private _authRepository: AuthRepository,
+    @Inject(UserRepository) private _userRepository: UserRepository,
+    private _commandBus: CommandBus,
+    private _queryBus: QueryBus,
+    private _bearerTokenService: BearerTokenService,
   ) {
   }
 
   async createAuthTokens(user: UserProfile): Promise<LoginResponseDto> {
     const { _id: userId } = user;
-    const accessToken = this.bearerTokenService.sign(user);
+    const accessToken = this._bearerTokenService.sign(user);
     const refreshToken = uuidV4();
     const command = new CreateRefreshTokenCommand(userId, refreshToken);
-    await this.commandBus.execute(command);
+    await this._commandBus.execute(command);
     return { accessToken, refreshToken };
   }
 
@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   getMe(userId: string): Promise<GetMeResponseDto> {
-    return this.queryBus.execute(new FindUserQuery({ _id: userId }));
+    return this._queryBus.execute(new FindUserQuery({ _id: userId }));
   }
 
   refreshToken(token: string): Promise<RefreshTokenResponseDto> {
@@ -61,5 +61,6 @@ export class AuthService {
   }
 
   async signup(dto: SignupRequestDto) {
+    // await this._commandBus(new )
   }
 }

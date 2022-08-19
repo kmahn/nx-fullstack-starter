@@ -26,7 +26,7 @@ export class AuthStorageService {
 
   constructor(
     @Inject(APP_AUTH_CONFIG) private _config: AuthConfig,
-    @Inject(PLATFORM_ID) private platformId: any
+    @Inject(PLATFORM_ID) private _platformId: any
   ) {
     this._init();
   }
@@ -69,7 +69,7 @@ export class AuthStorageService {
   }
 
   set redirectUrlAfterLogIn(url: string | null) {
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
     const key = this._getKey(AuthStorageKey.REDIRECT_URL_AFTER_LOG_IN);
@@ -77,7 +77,7 @@ export class AuthStorageService {
   }
 
   get redirectUrlAfterLogIn(): string | null {
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return null;
     }
     const key = this._getKey(AuthStorageKey.REDIRECT_URL_AFTER_LOG_IN);
@@ -87,7 +87,7 @@ export class AuthStorageService {
   }
 
   private _clear(): void {
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
 
@@ -101,7 +101,7 @@ export class AuthStorageService {
 
   private _set(key: AuthStorageKey, value: string | null) {
     /* istanbul ignore next */
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
 
@@ -113,7 +113,7 @@ export class AuthStorageService {
 
   private _get(key: AuthStorageKey | AuthStorageEvent): string | null {
     /* istanbul ignore next */
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return null;
     }
     const k = this._getKey(key);
@@ -135,7 +135,7 @@ export class AuthStorageService {
 
   /* istanbul ignore next */
   private _init() {
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
 
@@ -163,7 +163,7 @@ export class AuthStorageService {
 
   private _emit(event: AuthStorageEvent, data?: any) {
     /* istanbul ignore next */
-    if (isPlatformServer(this.platformId)) {
+    if (isPlatformServer(this._platformId)) {
       return;
     }
 

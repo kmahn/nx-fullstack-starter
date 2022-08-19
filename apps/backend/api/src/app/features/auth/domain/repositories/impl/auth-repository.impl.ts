@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { AuthDocument, ModelName } from '@starter/backend-mongo-database';
 import { Model } from 'mongoose';
 import { AuthAggregate } from '../../aggregates/auth.aggregate';
-import { AuthRepository } from '../interfaces/auth-repository';
+import { AuthRepository } from '../auth-repository';
 
 @Injectable()
 export class AuthRepositoryImpl implements AuthRepository {

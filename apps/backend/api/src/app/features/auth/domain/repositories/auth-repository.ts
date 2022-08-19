@@ -1,4 +1,4 @@
-import { AuthAggregate } from '../../aggregates';
+import { AuthAggregate } from '../aggregates';
 
 export interface AuthRepository {
   findById(id: string): Promise<AuthAggregate | null>;
