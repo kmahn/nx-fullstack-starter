@@ -8,18 +8,21 @@ export class LoginInfoAggregate extends AggregateRoot implements Partial<LoginIn
   _id: string;
   refreshToken: string;
   user: string;
+  createdAt: Date;
 
   constructor(
     {
       _id = new ObjectId().toString(),
       refreshToken,
       user,
+      createdAt,
     }:  Partial<LoginInfoEntity>
   ) {
     super();
     this._id = _id;
     this.refreshToken = refreshToken;
     this.user = user;
+    this.createdAt = createdAt;
   }
 
   created() {

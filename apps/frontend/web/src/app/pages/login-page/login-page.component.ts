@@ -15,10 +15,10 @@ export class LoginPageComponent extends BaseFormComponent<LoginRequestDto> {
   autoLogin = false;
 
   constructor(
-    private authService: AuthService,
-    private storage: AuthStorageService,
-    private router: Router,
-    private layoutService: LayoutService,
+    private _authService: AuthService,
+    private _storage: AuthStorageService,
+    private _router: Router,
+    private _layoutService: LayoutService,
     fb: NonNullableFormBuilder
   ) {
     super(fb);
@@ -35,11 +35,11 @@ export class LoginPageComponent extends BaseFormComponent<LoginRequestDto> {
 
   protected processRequest(dto: LoginRequestDto): any {
     const { email, password } = dto;
-    return this.authService.login(email, password, this.autoLogin);
+    return this._authService.login(email, password, this.autoLogin);
   }
 
   protected async processResponse(): Promise<void> {
-    const redirectUrl = this.storage.redirectUrlAfterLogIn || '/main';
-    await this.router.navigateByUrl(redirectUrl);
+    const redirectUrl = this._storage.redirectUrlAfterLogIn || '/main';
+    await this._router.navigateByUrl(redirectUrl);
   }
 }

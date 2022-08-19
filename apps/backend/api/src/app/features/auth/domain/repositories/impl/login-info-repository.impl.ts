@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { LoginInfoDocument, ModelName } from '@starter/backend-mongo-database';
 import { Model } from 'mongoose';
 import { LoginInfoAggregate } from '../../aggregates';
-import { LoginInfoRepository } from '../interfaces/login-info-repository';
+import { LoginInfoRepository } from '../login-info-repository';
 
 @Injectable()
 export class LoginInfoRepositoryImpl implements LoginInfoRepository {
@@ -22,7 +22,7 @@ export class LoginInfoRepositoryImpl implements LoginInfoRepository {
     return new LoginInfoAggregate(document);
   }
 
-  async patchRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<void> {
+  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<void> {
     const document = await this._loginInfoModel
       .findOneAndDelete({ refreshToken: oldRefreshToken })
       .lean();

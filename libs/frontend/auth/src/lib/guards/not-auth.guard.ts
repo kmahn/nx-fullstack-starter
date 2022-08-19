@@ -15,9 +15,9 @@ import { AuthService } from '../services/auth.service';
 @Injectable()
 export class NotAuthGuard implements CanActivate, CanActivateChild {
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    @Inject(APP_AUTH_CONFIG) private config: AuthConfig
+    private _authService: AuthService,
+    private _router: Router,
+    @Inject(APP_AUTH_CONFIG) private _config: AuthConfig
   ) {
   }
 
@@ -34,12 +34,12 @@ export class NotAuthGuard implements CanActivate, CanActivateChild {
   }
 
   private _activate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (!this.authService.loggedIn) {
+    if (!this._authService.loggedIn) {
       return true;
     }
 
-    if (this.config.defaultPageUrlAfterLogIn) {
-      return from(this.router.navigateByUrl(this.config.defaultPageUrlAfterLogIn)).pipe(mapTo(false));
+    if (this._config.defaultPageUrlAfterLogIn) {
+      return from(this._router.navigateByUrl(this._config.defaultPageUrlAfterLogIn)).pipe(mapTo(false));
     }
 
     return false;

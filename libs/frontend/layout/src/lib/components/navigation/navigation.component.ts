@@ -9,11 +9,11 @@ import { ActionMenuItem, LinkMenuItem, MenuItemBase, NavigationMenuItems } from 
 })
 export class NavigationComponent {
 
-  constructor(private layoutService: LayoutService) {
+  constructor(private _layoutService: LayoutService) {
   }
 
   get items(): NavigationMenuItems {
-    return this.layoutService.config.navigation!;
+    return this._layoutService.config.navigation!;
   }
 
   /* istanbul ignore next */
