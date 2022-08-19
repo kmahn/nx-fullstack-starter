@@ -10,14 +10,14 @@ import { LayoutService } from '@starter/frontend/layout';
 export class AppComponent implements OnInit {
 
   constructor(
-    private authService: AuthService,
-    private layoutService: LayoutService,
+    private _authService: AuthService,
+    private _layoutService: LayoutService,
   ) {
   }
 
   ngOnInit(): void {
-    this.authService.loggedIn$.subscribe(loggedIn => {
-      this.layoutService.loggedIn = loggedIn;
+    this._authService.loggedIn$.subscribe(loggedIn => {
+      this._layoutService.loggedIn = loggedIn;
     });
   }
 }

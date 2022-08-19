@@ -10,28 +10,28 @@ import { GetMeResponseDto, LoginResponseDto, RefreshTokenResponseDto, SignupRequ
 @ApiTags('인증 API')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private _authService: AuthService) {}
 
   @LoginRequired()
   @Get('me')
   getMe(@User() user: UserProfile): Promise<GetMeResponseDto> {
-    return this.authService.getMe(user._id);
+    return this._authService.getMe(user._id);
   }
 
   @Get('token/refresh')
   refreshToken(@Headers('x-refresh-token') token: string): Promise<RefreshTokenResponseDto> {
-    return this.authService.refreshToken(token);
+    return this._authService.refreshToken(token);
   }
 
 
   @Login
   @Post('login')
   login(@User() user: UserProfile): Promise<LoginResponseDto> {
-    return this.authService.createAuthTokens(user);
+    return this._authService.createAuthTokens(user);
   }
 
   @Post('signup')
   async signup(@Body() dto: SignupRequestDto): Promise<void> {
-    await this.authService.signup(dto);
+    await this._authService.signup(dto);
   }
 }

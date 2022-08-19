@@ -16,10 +16,10 @@ import { from, Observable } from 'rxjs';
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(
-    private authService: AuthService,
-    private storageService: AuthStorageService,
-    private router: Router,
-    @Inject(APP_AUTH_CONFIG) private config: AuthConfig,
+    private _authService: AuthService,
+    private _storageService: AuthStorageService,
+    private _router: Router,
+    @Inject(APP_AUTH_CONFIG) private _config: AuthConfig,
   ) {
   }
 
@@ -38,14 +38,14 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   private _activate(
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (this.authService.loggedIn) {
+    if (this._authService.loggedIn) {
       return true;
     }
 
-    this.storageService.redirectUrlAfterLogIn = state.url;
+    this._storageService.redirectUrlAfterLogIn = state.url;
 
-    if (this.config.loginPageUrl) {
-      return from(this.router.navigateByUrl('/login')).pipe(mapTo(false));
+    if (this._config.loginPageUrl) {
+      return from(this._router.navigateByUrl('/login')).pipe(mapTo(false));
     }
 
     return false;
