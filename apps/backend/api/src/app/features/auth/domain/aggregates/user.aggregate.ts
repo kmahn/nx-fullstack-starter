@@ -14,17 +14,19 @@ export class UserAggregate extends AggregateRoot implements Partial<UserEntity> 
   readonly updatedAt: Date;
   readonly password?: string;
 
-  constructor({
-                _id = new ObjectId().toString(),
-                role = 'member',
-                email,
-                name,
-                accessDate = null,
-                auth = null,
-                joinedAt,
-                updatedAt,
-                password,
-              }: Partial<UserEntity & { password: string }>) {
+  constructor(
+    {
+      _id = new ObjectId().toString(),
+      role = 'member',
+      email,
+      name,
+      accessDate = null,
+      auth = null,
+      joinedAt,
+      updatedAt,
+      password,
+    }: Partial<UserEntity & { password: string }>
+  ) {
     super();
     this._id = _id.toString();
     this.role = role;

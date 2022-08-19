@@ -1,30 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ModelName, UserDocument } from '@starter/backend-mongo-database';
+import { UserEntity } from '@starter/global-data';
 import { Model } from 'mongoose';
 import { UserAggregate } from '../../aggregates/user.aggregate';
-import { UserRepository } from '../interfaces/user-repository';
+import { UserRepository } from '../user-repository';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(
-    @InjectModel(ModelName.USER) private userModel: Model<UserDocument>
+    @InjectModel(ModelName.USER) private _userModel: Model<UserDocument>
   ) {}
 
   async create(user: UserAggregate): Promise<void> {
-    await this.userModel.create(user);
+    await this._userModel.create(user);
   }
 
   async findById(id: string): Promise<UserAggregate | null> {
-    const document = await this.userModel.findById(id).lean();
+    const document = await this._userModel.findById(id).lean();
     if (!document) {
       return null;
     }
     return new UserAggregate(document);
   }
 
-  async findOne(filter: any): Promise<UserAggregate | null> {
-    const document = await this.userModel.findOne(filter).lean();
+  async findOne(filter: Partial<UserEntity>): Promise<UserAggregate | null> {
+    const document = await this._userModel.findOne(filter).lean();
     if (!document) {
       return null;
     }
@@ -32,6 +33,6 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async updateOne(id: string, $set: Partial<UserAggregate>): Promise<void> {
-    await this.userModel.updateOne({ _id: id }, { $set });
+    await this._userModel.updateOne({ _id: id }, { $set });
   }
 }
