@@ -1,8 +1,12 @@
 import { Provider } from '@nestjs/common';
+import { AuthRepository } from './auth-repository';
 import { AuthRepositoryImpl, LoginInfoRepositoryImpl, UserRepositoryImpl } from './impl';
-import { AuthRepository, LoginInfoRepository, UserRepository } from './interfaces';
+import { LoginInfoRepository } from './login-info-repository';
+import { UserRepository } from './user-repository';
 
-export * from './interfaces';
+export * from './auth-repository';
+export * from './login-info-repository';
+export * from './user-repository';
 export * from './impl';
 
 export const Repositories: Provider[] = [

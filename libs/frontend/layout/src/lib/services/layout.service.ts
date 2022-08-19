@@ -20,8 +20,8 @@ export class LayoutService {
 
   private _logoutSubject: Subject<void> = new Subject();
 
-  constructor(@Optional() private router: Router) {
-    this.router?.events?.pipe(
+  constructor(@Optional() private _router: Router) {
+    this._router?.events?.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => this.showAll());
 
@@ -32,7 +32,7 @@ export class LayoutService {
     const { loginPageUrl } = this.config;
     this._logoutSubject.next();
     if (loginPageUrl) {
-      await this.router?.navigateByUrl(loginPageUrl);
+      await this._router?.navigateByUrl(loginPageUrl);
     }
   }
 
