@@ -4,15 +4,15 @@ import { UserProfile } from '@starter/global-data';
 
 @Injectable()
 export class BearerTokenService {
-  constructor(private jwtService: JwtService) {
+  constructor(private _jwtService: JwtService) {
   }
 
   verify(bearerToken: string): UserProfile {
     const token = bearerToken.replace(/^Bearer /, '');
-    return this.jwtService.verify(token);
+    return this._jwtService.verify(token);
   }
 
   sign(payload: UserProfile): string {
-    return this.jwtService.sign(payload);
+    return this._jwtService.sign(payload);
   }
 }

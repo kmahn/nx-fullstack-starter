@@ -29,11 +29,11 @@ export class BearerTokenInterceptor implements HttpInterceptor {
     new BehaviorSubject<boolean>(false);
 
   constructor(
-    private storage: AuthStorageService,
-    private authService: AuthService,
-    private router: Router,
-    private http: HttpClient,
-    @Inject(APP_AUTH_CONFIG) private config: AuthConfig
+    private _storage: AuthStorageService,
+    private _authService: AuthService,
+    private _router: Router,
+    private _http: HttpClient,
+    @Inject(APP_AUTH_CONFIG) private _config: AuthConfig
   ) {}
 
   intercept(
@@ -44,15 +44,15 @@ export class BearerTokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((err) => {
         if (err?.error?.code === ErrorCode.ACCESS_TOKEN_EXPIRED) {
-          return this.refreshToken(request, next);
+          return this._refreshToken(request, next);
         }
         return throwError(err);
       }),
       catchError((err) => {
         if (err?.status === 401) {
-          this.authService.logout().subscribe(() => {
-            if (this.config.loginPageUrl) {
-              this.router.navigateByUrl(this.config.loginPageUrl);
+          this._authService.logout().subscribe(() => {
+            if (this._config.loginPageUrl) {
+              this._router.navigateByUrl(this._config.loginPageUrl);
             }
           });
         }
@@ -62,7 +62,7 @@ export class BearerTokenInterceptor implements HttpInterceptor {
   }
 
   private _addBearerToken(request: HttpRequest<unknown>) {
-    const tokens = this.storage.tokens;
+    const tokens = this._storage.tokens;
     if (!tokens) {
       return request;
     }
@@ -72,20 +72,20 @@ export class BearerTokenInterceptor implements HttpInterceptor {
     });
   }
 
-  private refreshToken(
+  private _refreshToken(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (!this._refreshing) {
-      const { refreshToken } = this.storage.tokens as AuthTokens;
+      const { refreshToken } = this._storage.tokens as AuthTokens;
       const headers = { 'x-refresh-token': refreshToken as string };
       this._refreshing = true;
       this._refreshedSubject.next(false);
-      return this.http
-        .get<AuthTokens>(this.config.refreshTokenApiUrl, { headers })
+      return this._http
+        .get<AuthTokens>(this._config.refreshTokenApiUrl, { headers })
         .pipe(
           tap((tokens) => {
-            this.storage.tokens = tokens;
+            this._storage.tokens = tokens;
             this._refreshing = false;
             this._refreshedSubject.next(true);
           }),
