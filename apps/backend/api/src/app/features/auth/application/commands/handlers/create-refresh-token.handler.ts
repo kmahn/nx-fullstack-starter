@@ -1,22 +1,24 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { LoginInfoAggregate, LoginInfoRepository } from '../../../domain';
-import { CreateRefreshTokenCommand } from '../impl';
+import { CreateRefreshTokenCommand } from '../create-refresh-token.command';
 
 @CommandHandler(CreateRefreshTokenCommand)
 export class CreateRefreshTokenHandler implements ICommandHandler<CreateRefreshTokenCommand> {
   constructor(
-    // private loginInfoRepository: LoginInfoRepository,
-    private publisher: EventPublisher,
+    @Inject(LoginInfoRepository) private _loginInfoRepository: LoginInfoRepository,
+    private _publisher: EventPublisher,
   ) {
   }
 
   async execute(command: CreateRefreshTokenCommand): Promise<void> {
-    // const { userId, refreshToken } = command;
-    // const loginInfo = this.publisher.mergeObjectContext(
-    //   new LoginInfoAggregate({ user: userId, refreshToken })
-    // );
-    // await this.loginInfoRepository.create(loginInfo);
-    // loginInfo.created()
-
+    const { userId, refreshToken } = command;
+    const aggregateParam = { user: userId, refreshToken };
+    const loginInfo = this._publisher.mergeObjectContext(
+      new LoginInfoAggregate(aggregateParam)
+    );
+    await this._loginInfoRepository.create(loginInfo);
+    loginInfo.created();
+    loginInfo.commit();
   }
 }
