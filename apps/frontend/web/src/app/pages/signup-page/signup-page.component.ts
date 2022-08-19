@@ -12,8 +12,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./signup-page.component.scss'],
 })
 export class SignupPageComponent extends BaseFormComponent<SignupRequestDto & { confirmPassword: string; }> {
-  constructor(private authService: AuthService,
-              private router: Router,
+  constructor(private _authService: AuthService,
+              private _router: Router,
               fb: NonNullableFormBuilder) {
     super(fb);
   }
@@ -33,11 +33,11 @@ export class SignupPageComponent extends BaseFormComponent<SignupRequestDto & { 
   }
 
   protected processRequest(dto: SignupRequestDto): Observable<void> {
-    return this.authService.signup(dto);
+    return this._authService.signup(dto);
   }
 
   protected processResponse(response: any): Promise<void> | void {
     alert('회원가입에 성공하였습니다. 로그인페이지로 이동합니다.');
-    this.router.navigateByUrl('/login');
+    this._router.navigateByUrl('/login');
   }
 }

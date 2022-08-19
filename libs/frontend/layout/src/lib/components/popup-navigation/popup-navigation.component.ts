@@ -23,7 +23,7 @@ export class PopupNavigationComponent extends BaseDialogComponent {
 
   constructor(
     public layoutService: LayoutService,
-    private router: Router,
+    private _router: Router,
     dialogRef: DialogRef,
   ) {
     super(dialogRef);
@@ -49,7 +49,7 @@ export class PopupNavigationComponent extends BaseDialogComponent {
     } else if (item.type === 'external') {
       location.href = item.link;
     } else {
-      await this.router.navigateByUrl(item.link);
+      await this._router.navigateByUrl(item.link);
     }
     this.close();
   }
@@ -59,7 +59,7 @@ export class PopupNavigationComponent extends BaseDialogComponent {
     if (!link) {
       throw new Error(LayoutErrors.LINK_NOT_DEFINED);
     }
-    await this.router.navigateByUrl(link);
+    await this._router.navigateByUrl(link);
     this.close();
   }
 

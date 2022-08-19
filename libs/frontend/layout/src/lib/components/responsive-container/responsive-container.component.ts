@@ -11,11 +11,11 @@ export class ResponsiveContainerComponent {
 
   @HostBinding('style.max-width') maxWidth: string;
 
-  constructor(@Inject(APP_LAYOUT_CONFIG) private config: AppLayoutConfig) {
-    this.maxWidth = this.config.responsiveMaxContainerWidth;
+  constructor(@Inject(APP_LAYOUT_CONFIG) private _config: AppLayoutConfig) {
+    this.maxWidth = this._config.responsiveMaxContainerWidth;
   }
 
   @Input() set responsiveMaxWidth(width: ResponsiveMaxContainerWidth | string) {
-    this.maxWidth = width ?? this.config.responsiveMaxContainerWidth;
+    this.maxWidth = width ?? this._config.responsiveMaxContainerWidth;
   }
 }
