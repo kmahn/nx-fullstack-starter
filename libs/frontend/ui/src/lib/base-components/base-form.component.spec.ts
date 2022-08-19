@@ -2,22 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { fakeAsync } from '@angular/core/testing';
-import {
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators, } from '@angular/forms';
 import { ngMockClick, reset } from '@global/frontend/test';
 import { ErrorCode, ErrorResponseDto } from '@starter/global-data';
-import {
-  MockBuilder,
-  MockedComponentFixture,
-  MockRender,
-  ngMocks,
-} from 'ng-mocks';
-import { interval, Observable, of, Subscription, throwError } from 'rxjs';
+import { MockBuilder, MockedComponentFixture, MockRender, ngMocks, } from 'ng-mocks';
+import { interval, Observable, of, throwError } from 'rxjs';
 import { FormGroupType } from '../type-utils';
 import { BaseFormComponent, ErrorResponse } from './base-form.component';
 
@@ -35,18 +24,19 @@ class TestAuthService {
 
 @Component({
   selector: 'lf-login',
-  template: ` <form [formGroup]="formGroup" (ngSubmit)="submit()">
-    <input type="email" formControlName="email" />
-    <input type="password" formControlName="password" />
-    <button type="submit">Login</button>
-  </form>`,
+  template: `
+    <form [formGroup]="formGroup" (ngSubmit)="submit()">
+      <input type="email" formControlName="email"/>
+      <input type="password" formControlName="password"/>
+      <button type="submit">Login</button>
+    </form>`,
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   providers: [TestAuthService],
 })
 class TestLoginFormComponent extends BaseFormComponent<TestLoginRequestDto> {
   constructor(
-    private authService: TestAuthService,
+    private _authService: TestAuthService,
     fb: NonNullableFormBuilder
   ) {
     super(fb);
@@ -63,10 +53,11 @@ class TestLoginFormComponent extends BaseFormComponent<TestLoginRequestDto> {
 
   protected processRequest(dto: TestLoginRequestDto): Observable<undefined> {
     const { email, password } = dto;
-    return this.authService.login(email, password);
+    return this._authService.login(email, password);
   }
 
-  protected processResponse(response: any): void {}
+  protected processResponse(response: any): void {
+  }
 }
 
 function setup() {
@@ -171,26 +162,11 @@ describe('BaseFormComponent', () => {
     it('initSubscription()', () => {
       // @ts-ignore: protected member
       const addSubscriptionsSpy = jest.spyOn(component, 'addSubscriptions');
-      const mockValueChangeSubscription = new Subscription();
-      const valueChangeSubscribeSpy = jest
-        .spyOn(component.formGroup!.valueChanges, 'subscribe')
-        .mockReturnValue(mockValueChangeSubscription);
-      const mockPendingSubscription = new Subscription();
-      // @ts-ignore: private member
-      const pendingSubscribeSpy = jest
-        .spyOn(component._pendingSubject, 'subscribe')
-        .mockReturnValue(mockPendingSubscription);
 
       // @ts-ignore: protected member
       component.initSubscriptions();
 
       expect(addSubscriptionsSpy).toHaveBeenCalledTimes(1);
-      expect(valueChangeSubscribeSpy).toHaveBeenCalledTimes(1);
-      expect(pendingSubscribeSpy).toHaveBeenCalledTimes(1);
-      expect(addSubscriptionsSpy).toHaveBeenCalledWith(
-        mockValueChangeSubscription,
-        mockPendingSubscription
-      );
     });
 
     it('ngDestroy()', () => {
@@ -259,7 +235,7 @@ describe('BaseFormComponent', () => {
       let processRequestOrder: number;
       let processResponseOrder: number;
       let resetOrder: number;
-      let secondSubmittedSubjectOrder: number;
+      let lastSubmittedSubjectOrder: number;
       let processErrorResponseOrder: number;
       let secondPendingSubjectOrder: number;
 
@@ -297,8 +273,8 @@ describe('BaseFormComponent', () => {
         processRequestOrder = processRequestSpy.mock.invocationCallOrder[0];
         processResponseOrder = processResponseSpy.mock.invocationCallOrder[0];
         resetOrder = resetSpy.mock.invocationCallOrder[0];
-        secondSubmittedSubjectOrder =
-          submittedSubjectSpy.mock.invocationCallOrder[1];
+        lastSubmittedSubjectOrder =
+          submittedSubjectSpy.mock.invocationCallOrder[submittedSubjectSpy.mock.calls.length - 1];
         processErrorResponseOrder =
           processErrorResponseSpy.mock.invocationCallOrder[0];
         secondPendingSubjectOrder =
@@ -316,7 +292,7 @@ describe('BaseFormComponent', () => {
         component.submit();
 
         getOrders();
-        expect(submittedSubjectSpy).toBeCalledTimes(2);
+        expect(submittedSubjectSpy).toBeCalledTimes(6);
         expect(submittedSubjectSpy).toHaveBeenNthCalledWith(1, true);
         expect(submittedSubjectSpy).toHaveBeenNthCalledWith(2, false);
         expect(mapToRequestDtoSpy).toBeCalledTimes(1);
@@ -334,10 +310,7 @@ describe('BaseFormComponent', () => {
         expect(firstPendingSubjectOrder < processRequestOrder).toBeTruthy();
         expect(processRequestOrder < processResponseOrder).toBeTruthy();
         expect(processResponseOrder < resetOrder).toBeTruthy();
-        expect(resetOrder < secondSubmittedSubjectOrder).toBeTruthy();
-        expect(
-          secondSubmittedSubjectOrder < secondPendingSubjectOrder
-        ).toBeTruthy();
+        expect(resetOrder < lastSubmittedSubjectOrder).toBeTruthy();
       });
 
       it('유효하지 않은 폼 데이터', () => {
@@ -367,7 +340,7 @@ describe('BaseFormComponent', () => {
         component.submit();
 
         getOrders();
-        expect(submittedSubjectSpy).toBeCalledTimes(1);
+        expect(submittedSubjectSpy).toBeCalledTimes(5);
         expect(submittedSubjectSpy).toBeCalledWith(true);
         expect(mapToRequestDtoSpy).toBeCalledTimes(1);
         expect(pendingSubjectSpy).toBeCalledTimes(2);

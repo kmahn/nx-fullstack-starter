@@ -27,8 +27,8 @@ export class BackendMongoDatabaseModule implements OnApplicationBootstrap {
 
   constructor(
     @Inject(adminConfig.KEY) private _adminConfig: ConfigType<typeof adminConfig>,
-    @InjectModel(ModelName.AUTH) private authModel: Model<AuthDocument>,
-    @InjectModel(ModelName.USER) private userModel: Model<UserDocument>,
+    @InjectModel(ModelName.AUTH) private _authModel: Model<AuthDocument>,
+    @InjectModel(ModelName.USER) private _userModel: Model<UserDocument>,
   ) {
   }
 
@@ -38,10 +38,10 @@ export class BackendMongoDatabaseModule implements OnApplicationBootstrap {
 
   private async _createAdmin() {
     const { email, password, name } = this._adminConfig;
-    const existed = await this.userModel.findOne({ email });
+    const existed = await this._userModel.findOne({ email });
     if (!existed) {
-      const userDocument = await this.userModel.create({ email, name, role: 'admin' });
-      const authDocument = await this.authModel.create({
+      const userDocument = await this._userModel.create({ email, name, role: 'admin' });
+      const authDocument = await this._authModel.create({
         providerId: String(userDocument._id),
         password,
         user: userDocument._id

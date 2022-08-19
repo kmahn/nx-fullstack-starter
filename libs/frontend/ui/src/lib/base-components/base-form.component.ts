@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Directive, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 import { FormGroupType } from '@starter/frontend/ui';
-import { BehaviorSubject, finalize, from, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, finalize, from, Observable, of, Subscription } from 'rxjs';
 
 export interface ErrorResponse {
   path?: Array<string | number> | string;
@@ -50,14 +50,16 @@ export abstract class BaseFormComponent<RequestDtoType> implements OnInit, OnDes
       this.formGroup.valueChanges.subscribe(() => {
         this._submittedSubject.next(false);
       }),
-      this._pendingSubject.subscribe(pending => {
-        Object.keys(this.formGroup.controls || {}).forEach(key => {
-          const control = this.formGroup.get(key);
-          if (control instanceof FormControl) {
-            pending ? control.disable() : control.enable();
-          }
-        });
-      })
+      this._pendingSubject
+        .pipe(distinctUntilChanged())
+        .subscribe(pending => {
+          Object.keys(this.formGroup.controls || {}).forEach(key => {
+            const control = this.formGroup.get(key);
+            if (control instanceof FormControl) {
+              pending ? control.disable() : control.enable();
+            }
+          });
+        })
     );
   }
 
@@ -72,11 +74,12 @@ export abstract class BaseFormComponent<RequestDtoType> implements OnInit, OnDes
   }
 
   hasError(controlErrorCode: string | null, path?: Array<string | number> | string): boolean {
-    if (!this.submitted) {
-      return false;
-    }
     if (!controlErrorCode) {
       return this._hasErrorResponse(path);
+    }
+
+    if (!this.submitted) {
+      return false;
     }
     return this.formGroup.hasError(controlErrorCode, path);
   }
