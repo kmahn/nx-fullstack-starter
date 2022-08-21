@@ -1,1 +1,1 @@
-export * from './backend-databose-test.module';
+export * from './backend-databose-test';

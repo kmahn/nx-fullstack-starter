@@ -1,17 +1,18 @@
-import { Provider } from '@nestjs/common';
+import { DynamicModule, Provider } from '@nestjs/common';
 import { getModelToken, MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { connect, Connection, Document, Model } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 import { ModelName } from '../enum';
 import { models } from '../models';
 
 let mongod: MongoMemoryServer | null = null;
-let connection: Connection | null = null;
 
-export async function createMongooseTestingModules(options: MongooseModuleOptions = {}) {
+export async function startMongooseTestingServer() {
   mongod = await MongoMemoryServer.create();
+}
+
+export function createMongooseTestingModules(options: MongooseModuleOptions = {}): DynamicModule[] {
   const uri = mongod.getUri();
-  connection = (await connect(uri)).connection;
 
   return [
     MongooseModule.forRootAsync({
@@ -30,23 +31,20 @@ export function getProvider(...modelNames: ModelName[]): Provider[] {
 }
 
 export function getModel<T extends Document>(modelName: ModelName): Model<T> {
-  if (!connection) throw new Error('Call createMongooseTestingModules');
   const schema = models.find(model => model.name === modelName)?.schema;
-  if (!schema) throw new Error('Schema Not Found');
-  return connection.model<T>(modelName, schema);
+  return mongoose.model<T>(modelName, schema);
 }
 
 export async function removeAll() {
-  if (!connection) throw new Error('Call createMongooseTestingModules');
-  const collections = connection.collections;
+  const collections = mongoose.connection.collections;
   for (const key in collections) {
     const collection = collections[key];
     await collection.deleteMany({});
   }
 }
 
-export async function closeMongooseTestingConnection() {
-  await connection.dropDatabase();
-  await connection.close();
+export async function closeMongooseTestingServer() {
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
   await mongod.stop();
 }
