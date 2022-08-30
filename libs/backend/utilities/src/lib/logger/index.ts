@@ -9,7 +9,8 @@ export const createLogger = (appName: string) => {
         format: winston.format.combine(
           winston.format.timestamp(),
           utilities.format.nestLike(appName, {
-            prettyPrint: true
+            prettyPrint: true,
+            colors: true
           })
         )
       })

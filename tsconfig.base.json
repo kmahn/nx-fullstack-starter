@@ -24,6 +24,7 @@
       ],
       "@starter/backend/config": ["libs/backend/config/src/index.ts"],
       "@starter/backend/exception": ["libs/backend/exception/src/index.ts"],
+      "@starter/backend/repository": ["libs/backend/repository/src/index.ts"],
       "@starter/backend/utilities": ["libs/backend/utilities/src/index.ts"],
       "@starter/frontend/auth": ["libs/frontend/auth/src/index.ts"],
       "@starter/frontend/layout": ["libs/frontend/layout/src/index.ts"],

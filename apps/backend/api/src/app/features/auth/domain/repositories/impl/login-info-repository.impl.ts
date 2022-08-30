@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoginInfoDocument, ModelName } from '@starter/backend-mongo-database';
+import { LoginInfoEntity } from '@starter/global-data';
 import { Model } from 'mongoose';
 import { LoginInfoAggregate } from '../../aggregates';
 import { LoginInfoRepository } from '../login-info-repository';
@@ -16,23 +17,17 @@ export class LoginInfoRepositoryImpl implements LoginInfoRepository {
     await this._loginInfoModel.create(loginInfo);
   }
 
-  async findOne(refreshToken: string): Promise<LoginInfoAggregate | null> {
-    const document = await this._loginInfoModel.findOne({ refreshToken });
+  async findOne(filter: Partial<LoginInfoEntity>): Promise<LoginInfoAggregate | null> {
+    const document = await this._loginInfoModel.findOne(filter);
     if (!document) return null;
     return new LoginInfoAggregate(document);
   }
 
-  async updateRefreshToken(oldRefreshToken: string, newRefreshToken: string): Promise<void> {
-    const document = await this._loginInfoModel
-      .findOneAndDelete({ refreshToken: oldRefreshToken })
-      .lean();
+  async updateOne(filter: Partial<LoginInfoEntity>, $set: Partial<LoginInfoEntity>): Promise<void> {
+    await this._loginInfoModel.updateOne(filter, { $set });
+  }
 
-    if (!document) return;
-
-    delete document._id;
-    delete document.createdAt;
-
-    const loginInfo = new LoginInfoAggregate({ ...document, refreshToken: newRefreshToken });
-    await this._loginInfoModel.create(loginInfo);
+  async deleteOne(filter: Partial<LoginInfoEntity>): Promise<void> {
+    await this._loginInfoModel.deleteOne(filter);
   }
 }

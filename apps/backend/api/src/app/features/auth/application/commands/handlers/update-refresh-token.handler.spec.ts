@@ -1,24 +1,7 @@
-// import { Inject } from '@nestjs/common';
-// import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-// import { LoginInfoRepository } from '../../../domain';
-// import { UpdateRefreshTokenCommand } from '../update-refresh-token.command';
-//
-// @CommandHandler(UpdateRefreshTokenCommand)
-// export class UpdateRefreshTokenHandler implements ICommandHandler<UpdateRefreshTokenCommand> {
-//   constructor(
-//     @Inject(LoginInfoRepository) private _loginInfoRepository: LoginInfoRepository
-//   ) {
-//   }
-//
-//   async execute(command: UpdateRefreshTokenCommand): Promise<any> {
-//     const { oldRefreshToken, newRefreshToken } = command;
-//     await this._loginInfoRepository.updateRefreshToken(oldRefreshToken, newRefreshToken);
-//   }
-// }
-
 import { CqrsModule } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoginInfoRepository } from '../../../domain';
+import { LoginInfoAggregate, LoginInfoRepository } from '../../../domain';
+import { UpdateRefreshTokenCommand } from '../impl';
 import { UpdateRefreshTokenHandler } from './update-refresh-token.handler';
 
 let handler: UpdateRefreshTokenHandler;
@@ -30,7 +13,14 @@ describe('UpdateRefreshTokenHandler', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CqrsModule],
       providers: [
-        { provide: LoginInfoRepository, useValue: { updateRefreshToken: jest.fn() } },
+        {
+          provide: LoginInfoRepository,
+          useValue: {
+            findOne: jest.fn(),
+            create: jest.fn(),
+            deleteOne: jest.fn(),
+          }
+        },
         UpdateRefreshTokenHandler,
       ]
     }).compile();
@@ -46,14 +36,32 @@ describe('UpdateRefreshTokenHandler', () => {
   });
 
   it('execute()', async () => {
-    const oldRefreshToken = 'old refresh token';
-    const newRefreshToken = 'new refresh token';
-    const command = { oldRefreshToken, newRefreshToken };
-    let repositorySpy = jest.spyOn(repository, 'updateRefreshToken');
+    const oldRefreshTokenStub = 'old refresh token';
+    const userIdStub = 'user id';
+    const oldLoginInfoStub = new LoginInfoAggregate({
+      refreshToken: oldRefreshTokenStub,
+      user: userIdStub,
+    });
+
+    const newRefreshTokenStub = 'new refresh token';
+
+    const command = new UpdateRefreshTokenCommand(oldRefreshTokenStub, newRefreshTokenStub);
+    let findOneSpy = jest.spyOn(repository, 'findOne')
+      .mockResolvedValue(oldLoginInfoStub);
+
+    let createSpy = jest.spyOn(repository, 'create');
+    let deleteOneSpy = jest.spyOn(repository, 'deleteOne');
 
     await handler.execute(command);
 
-    expect(repositorySpy).toBeCalledTimes(1);
-    expect(repositorySpy).toBeCalledWith(oldRefreshToken, newRefreshToken);
+    expect(findOneSpy).toBeCalledTimes(1);
+    expect(findOneSpy).toBeCalledWith({ refreshToken: oldRefreshTokenStub });
+    expect(createSpy).toBeCalledTimes(1);
+    expect(createSpy).toBeCalledWith(expect.objectContaining({
+      refreshToken: newRefreshTokenStub,
+      user: userIdStub,
+    }));
+    expect(deleteOneSpy).toBeCalledTimes(1);
+    expect(deleteOneSpy).toBeCalledWith({ _id: oldLoginInfoStub._id });
   });
 });

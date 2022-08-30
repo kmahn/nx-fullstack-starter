@@ -17,7 +17,7 @@ export class UserCreatedHandler implements IEventHandler<UserCreatedEvent> {
     const auth = new AuthAggregate({ user, password });
     await Promise.all([
       this._authRepository.create(auth),
-      this._userRepository.updateOne(user, { auth: auth._id })
+      this._userRepository.updateOne({ _id: user }, { auth: auth._id })
     ]);
   }
 }

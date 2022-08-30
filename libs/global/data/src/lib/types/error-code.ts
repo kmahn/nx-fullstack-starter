@@ -3,6 +3,7 @@ export enum ErrorCode {
   BAD_GATEWAY = 'bad gateway',
   BAD_REQUEST = 'bad request',
   CONFLICT = 'conflict',
+  EMAIL_IS_ALREADY_REGISTERED = 'email is already registered',
   FORBIDDEN = 'forbidden',
   GATEWAY_TIMEOUT = 'gateway timeout',
   GONE = 'gone',

@@ -28,4 +28,5 @@ export class LoginInfoAggregate extends AggregateRoot implements Partial<LoginIn
   created() {
     this.apply(new LoginInfoCreatedEvent(this._id));
   }
+
 }

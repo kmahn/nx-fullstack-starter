@@ -1,17 +1,11 @@
-import { IQuery } from '@nestjs/cqrs';
-import { UserEntity } from '@starter/global-data';
-
-export class FindUserQuery implements IQuery {
-  constructor(public readonly filter: Partial<UserEntity>) {
-  }
-}
+import { FindUserQuery } from './find-user.query';
 
 describe('FindUserQuery', () => {
   it('constructor()', () => {
-    const filter = { _id: 'user id' };
-    const query = new FindUserQuery(filter);
+    const filterStub = { _id: 'user id' };
+    const query = new FindUserQuery(filterStub);
 
     expect(query).toBeDefined();
-    expect(query.filter).toEqual(filter);
+    expect(query.filter).toEqual(filterStub);
   });
 });

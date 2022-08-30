@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { LoginInfoAggregate, LoginInfoRepository } from '../../../domain';
-import { CreateRefreshTokenCommand } from '../create-refresh-token.command';
+import { CreateRefreshTokenCommand } from '../impl';
 
 @CommandHandler(CreateRefreshTokenCommand)
 export class CreateRefreshTokenHandler implements ICommandHandler<CreateRefreshTokenCommand> {
@@ -14,11 +14,11 @@ export class CreateRefreshTokenHandler implements ICommandHandler<CreateRefreshT
   async execute(command: CreateRefreshTokenCommand): Promise<void> {
     const { userId, refreshToken } = command;
     const aggregateParam = { user: userId, refreshToken };
-    const loginInfo = this._publisher.mergeObjectContext(
+    const loginInfoAggregate = this._publisher.mergeObjectContext(
       new LoginInfoAggregate(aggregateParam)
     );
-    await this._loginInfoRepository.create(loginInfo);
-    loginInfo.created();
-    loginInfo.commit();
+    await this._loginInfoRepository.create(loginInfoAggregate);
+    loginInfoAggregate.created();
+    loginInfoAggregate.commit();
   }
 }

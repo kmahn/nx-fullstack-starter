@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { BearerTokenService } from '@starter/backend/bearer-token';
+import { UnauthorizedException } from '@starter/backend/exception';
 import {
   GetMeResponseDto,
   LoginResponseDto,
@@ -16,8 +17,10 @@ import {
   UserRepository,
   WithdrawnUserException
 } from '../domain';
-import { CreateRefreshTokenCommand } from './commands';
-import { FindUserQuery } from './queries';
+import { EmailIsAlreadyRegisteredException } from '../domain/exceptions/email-is-already-registered.exception';
+import { CreateRefreshTokenCommand, CreateUserCommand, UpdateRefreshTokenCommand } from './commands';
+import { FindLoginInfoQuery, FindUserQuery } from './queries';
+import { FindAuthQuery } from './queries/impl/find-auth.query';
 
 @Injectable()
 export class AuthService {
@@ -34,33 +37,46 @@ export class AuthService {
     const { _id: userId } = user;
     const accessToken = this._bearerTokenService.sign(user);
     const refreshToken = uuidV4();
-    const command = new CreateRefreshTokenCommand(userId, refreshToken);
-    await this._commandBus.execute(command);
+    await this._commandBus.execute(new CreateRefreshTokenCommand(userId, refreshToken));
     return { accessToken, refreshToken };
   }
 
   async validatePassword(email: string, password: string): Promise<UserProfile> {
-    const user = await this._userRepository.findOne({ email });
-    if (!user)
+    const userAggregate = await this._queryBus.execute(new FindUserQuery({ email }));
+    if (!userAggregate)
       throw new UserNotFoundException();
-    if (!user.auth)
+    if (!userAggregate.auth)
       throw new WithdrawnUserException();
-    const auth = await this._authRepository.findById(user.auth);
-    if (!auth?.validatePassword(password))
+
+    const authAggregate = await this._queryBus.execute(new FindAuthQuery({ _id: userAggregate.auth }));
+    if (!authAggregate?.validatePassword(password))
       throw new InvalidPasswordException();
-    const { _id, role } = user;
+    const { _id, role } = userAggregate;
     return { _id, role };
   }
 
-  getMe(userId: string): Promise<GetMeResponseDto> {
-    return this._queryBus.execute(new FindUserQuery({ _id: userId }));
+  async getMe(userId: string): Promise<GetMeResponseDto> {
+    const user = await this._queryBus.execute(new FindUserQuery({ _id: userId }));
+    if (!user) throw new UserNotFoundException();
+    return user;
   }
 
-  refreshToken(token: string): Promise<RefreshTokenResponseDto> {
-    return Promise.resolve(undefined);
+  async refreshToken(refreshToken: string): Promise<RefreshTokenResponseDto> {
+    const loginInfoAggregate = await this._queryBus.execute(new FindLoginInfoQuery({ refreshToken }));
+    if (!loginInfoAggregate) throw new UnauthorizedException();
+    const { user } = loginInfoAggregate;
+    const userAggregate = await this._queryBus.execute(new FindUserQuery({ _id: user }));
+    const { _id, role } = userAggregate;
+    const newRefreshToken = uuidV4();
+    const newAccessToken = this._bearerTokenService.sign({ _id, role });
+    await this._commandBus.execute(new UpdateRefreshTokenCommand(refreshToken, newRefreshToken));
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 
   async signup(dto: SignupRequestDto) {
-    // await this._commandBus(new )
+    const { email } = dto;
+    const userAggregate = await this._queryBus.execute(new FindUserQuery({ email }));
+    if (!!userAggregate) throw new EmailIsAlreadyRegisteredException();
+    await this._commandBus.execute(new CreateUserCommand(dto));
   }
 }

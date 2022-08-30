@@ -32,7 +32,7 @@ export class UserRepositoryImpl implements UserRepository {
     return new UserAggregate(document);
   }
 
-  async updateOne(id: string, $set: Partial<UserAggregate>): Promise<void> {
-    await this._userModel.updateOne({ _id: id }, { $set });
+  async updateOne(filter: Partial<UserEntity>, $set: Partial<UserAggregate>): Promise<void> {
+    await this._userModel.updateOne(filter, { $set });
   }
 }

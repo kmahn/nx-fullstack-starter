@@ -8,6 +8,7 @@
               formControlName="email"></lf-input>
     <span error *ngIf="hasError('required', 'email')">이메일을 입력해주세요.</span>
     <span error *ngIf="hasError('email', 'email')">잘못된 이메일 형식입니다.</span>
+    <span error *ngIf="hasError(null, 'email')">{{errorResponse?.message}}</span>
   </lf-control-wrapper-with-error-message>
 
   <lf-control-wrapper-with-error-message>
@@ -15,6 +16,7 @@
               placeholder="비밀번호 입력"
               formControlName="password"></lf-input>
     <span error *ngIf="hasError('required', 'password')">비밀번호를 입력해주세요.</span>
+    <span error *ngIf="hasError(null, 'password')">{{errorResponse?.message}}</span>
   </lf-control-wrapper-with-error-message>
 
   <div class="flex text-sm items-center">

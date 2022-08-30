@@ -10,7 +10,7 @@ export interface ErrorResponse {
 }
 
 @Directive()
-export abstract class BaseFormComponent<RequestDtoType> implements OnInit, OnDestroy {
+export abstract class BaseFormComponent<RequestDtoType, BuilderType extends FormBuilder | NonNullableFormBuilder | null = NonNullableFormBuilder> implements OnInit, OnDestroy {
   readonly submitted$: Observable<boolean>;
   readonly pending$: Observable<boolean>;
 
@@ -21,7 +21,7 @@ export abstract class BaseFormComponent<RequestDtoType> implements OnInit, OnDes
   private _pendingSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private _subscription: Subscription = new Subscription();
 
-  protected constructor(fb?: FormBuilder | NonNullableFormBuilder) {
+  protected constructor(fb: BuilderType) {
     this.submitted$ = this._submittedSubject.asObservable();
     this.pending$ = this._pendingSubject.asObservable();
     this.formGroup = this.initFormGroup(fb);
@@ -43,9 +43,10 @@ export abstract class BaseFormComponent<RequestDtoType> implements OnInit, OnDes
     this.initSubscriptions();
   }
 
-  protected abstract initFormGroup(fb: FormBuilder | NonNullableFormBuilder | undefined): FormGroup<FormGroupType<RequestDtoType>>;
+  protected abstract initFormGroup(fb: BuilderType): FormGroup<FormGroupType<RequestDtoType>>;
 
   protected initSubscriptions() {
+
     this.addSubscriptions(
       this.formGroup.valueChanges.subscribe(() => {
         this._submittedSubject.next(false);
@@ -73,14 +74,19 @@ export abstract class BaseFormComponent<RequestDtoType> implements OnInit, OnDes
     this._subscription.unsubscribe();
   }
 
+  /**
+   * @param controlErrorCode{string | null}: null 설정시 서버로부터의 응답이 에러인 경우를 처리
+   * @param path {Array<string | number> | string}: formGroup의 컨트롤 경로
+   */
   hasError(controlErrorCode: string | null, path?: Array<string | number> | string): boolean {
-    if (!controlErrorCode) {
+    if (controlErrorCode === null) {
       return this._hasErrorResponse(path);
     }
 
     if (!this.submitted) {
       return false;
     }
+
     return this.formGroup.hasError(controlErrorCode, path);
   }
 

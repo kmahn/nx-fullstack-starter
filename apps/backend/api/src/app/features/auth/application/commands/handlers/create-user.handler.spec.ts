@@ -1,13 +1,3 @@
-// import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-// import { CreateUserCommand } from '../create-user.command';
-//
-// @CommandHandler(CreateUserCommand)
-// export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
-//   execute(command: CreateUserCommand): Promise<any> {
-//     return Promise.resolve(undefined);
-//   }
-// }
-
 import { CqrsModule, EventPublisher } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '../../../domain';

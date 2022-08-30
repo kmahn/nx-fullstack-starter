@@ -1,6 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
 import { LayoutService } from '../../services/layout.service';
 import { LayoutConfig } from '../../types';
 

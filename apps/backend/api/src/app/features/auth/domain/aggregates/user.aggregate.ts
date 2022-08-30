@@ -4,15 +4,15 @@ import { ObjectId } from 'mongodb';
 import { UserCreatedEvent } from '../events/impl/user-created.event';
 
 export class UserAggregate extends AggregateRoot implements Partial<UserEntity> {
-  readonly _id?: string;
-  readonly role: UserRoleType;
-  readonly email: string;
-  readonly name: string;
-  readonly accessDate: Date | null;
-  readonly auth: string | null;
-  readonly joinedAt: Date;
-  readonly updatedAt: Date;
-  readonly password?: string;
+  _id?: string;
+  role: UserRoleType;
+  email: string;
+  name: string;
+  accessDate: Date | null;
+  auth: string | null;
+  joinedAt: Date;
+  updatedAt: Date;
+  password?: string;
 
   constructor(
     {
